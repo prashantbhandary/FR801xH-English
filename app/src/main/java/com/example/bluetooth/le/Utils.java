@@ -116,7 +116,7 @@ public class Utils {
     }
 
     /**
-     * 位运算结果的反推函数10 -> 2 | 8;
+     * Reverse calculation function for bitwise operation results 10 -> 2 | 8;
      */
     static private List<Integer> getElement(int number){
     	List<Integer> result = new ArrayList<Integer>();

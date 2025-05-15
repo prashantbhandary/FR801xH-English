@@ -651,7 +651,7 @@ public class ReadWriteActivity extends Activity implements
 						Toast.LENGTH_SHORT).show();
 				break;
 			case 07:
-				precenttv.setText("正在更新.." + precent + "%");
+				precenttv.setText("Updating.." + precent + "%");
 				break;
 			case 8:
 				Toast.makeText(ReadWriteActivity.this, "No data received",

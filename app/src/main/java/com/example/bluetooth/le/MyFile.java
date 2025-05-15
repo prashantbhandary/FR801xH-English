@@ -4,6 +4,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MyFile {
-	public ImageView mFileImageView;  //文件图片
-	public TextView mFileNameTV;    //文件�?
+	public ImageView mFileImageView;  //File image
+	public TextView mFileNameTV;    //File name
 }

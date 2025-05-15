@@ -159,7 +159,7 @@ public class OtaActiviy extends Activity {
 		if(!mBluetoothAdapter.isEnabled())
 			mBluetoothAdapter.enable();
 
-		if (Build.VERSION.SDK_INT >= 23) {//如果 API level 是大于等于 23(Android 6.0) 时
+		if (Build.VERSION.SDK_INT >= 23) {//If API level is greater than or equal to 23 (Android 6.0)
 			if (PackageManager.PERMISSION_GRANTED != this.checkSelfPermission(
 					Manifest.permission.ACCESS_COARSE_LOCATION)) {
 				requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
@@ -234,9 +234,9 @@ public class OtaActiviy extends Activity {
 	};
 	public static boolean isLocationOpen(final Context context){
 		LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-		//gps定位
+		//GPS positioning
 		boolean isGpsProvider = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-		//网络定位
+		//Network positioning
 		boolean isNetWorkProvider = manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 		return isGpsProvider|| isNetWorkProvider;
 	}
@@ -270,7 +270,7 @@ public class OtaActiviy extends Activity {
 			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 				;
 			} else {
-				Toast.makeText(this, "需要打开存储权限才可以OTA", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, "Storage permission is required for OTA", Toast.LENGTH_SHORT).show();
 			}
 		}
 		else {
@@ -284,7 +284,7 @@ public class OtaActiviy extends Activity {
 		searchBn.setOnLongClickListener(new onLongClickImp());
 
 //		TextView tipTv = findViewById(R.id.tvtitle);
-//		tipTv.setText("Tips:" +"\r\n1.需打开位置和存储权限.\r\n2.搜索设备, 连接成功后开始升级.\r\n3.长按已连接,断开当前连接");
+//		tipTv.setText("Tips:" +"\r\n1.Location and storage permissions must be enabled.\r\n2.Search for devices, start upgrade after connection.\r\n3.Long press on connected device to disconnect");
 	}
 	@Override
 	protected void onDestroy() {
@@ -303,7 +303,7 @@ public class OtaActiviy extends Activity {
 
 		precenttv = (TextView) view.findViewById(R.id.precenttv);
 		mDialog = new Dialog(this, R.style.dialog);
-		precenttv.setText("断线中...");
+		precenttv.setText("Disconnecting...");
 		// mDialog.setOnKeyListener(keyListener);
 		mDialog.setCancelable(false);
 		mDialog.setContentView(view);
@@ -318,7 +318,7 @@ public class OtaActiviy extends Activity {
 
 		precenttv = (TextView) view.findViewById(R.id.precenttv);
 		mDialog = new Dialog(this, R.style.dialog);
-		precenttv.setText("正在连接...");
+		precenttv.setText("Connecting...");
 		// mDialog.setOnKeyListener(keyListener);
 		//mDialog.setCancelable(false);
 		mDialog.setContentView(view);
@@ -343,14 +343,14 @@ public class OtaActiviy extends Activity {
 	private BluetoothLeClass.OnConnectListener mOnConnect = new BluetoothLeClass.OnConnectListener() {
 		@Override
 		public void onConnect(BluetoothGatt gatt) {
-				//3秒超时 , 重连? myhandler.sendEmptyMessageDelayed(3,3000);
+				//3 second timeout, reconnect? myhandler.sendEmptyMessageDelayed(3,3000);
 				gatt.discoverServices();
 			}
 	};
 	private BluetoothLeClass.OnDisconnectListener mOnDisconnect = new BluetoothLeClass.OnDisconnectListener() {
 		@Override
 		public void onDisconnect(BluetoothGatt gatt) {
-			mHandler.sendEmptyMessage(7);//断线
+			mHandler.sendEmptyMessage(7);//Disconnected
 		}
 	};
 	private BluetoothLeClass.OnServiceDiscoverListener mOnServiceDiscover = new BluetoothLeClass.OnServiceDiscoverListener() {
@@ -801,7 +801,7 @@ public class OtaActiviy extends Activity {
 			0xd56041e4, 0xa2677172, 0x3c03e4d1, 0x4b04d447, 0xd20d85fd,
 			0xa50ab56b, 0x35b5a8fa, 0x42b2986c, 0xdbbbc9d6, 0xacbcf940,
 			0x32d86ce3, 0x45df5c75, 0xdcd60dcf, 0xabd13d59, 0x26d930ac,
-			0x51de003a, 0xc8d75180, 0xbfd06116, 0x21b4f4b5, 0x56b3c423,
+			0x51de003a, 0xc8d75180, 0xbdd06116, 0x21b4f4b5, 0x56b3c423,
 			0xcfba9599, 0xb8bda50f, 0x2802b89e, 0x5f058808, 0xc60cd9b2,
 			0xb10be924, 0x2f6f7c87, 0x58684c11, 0xc1611dab, 0xb6662d3d,
 			0x76dc4190, 0x01db7106, 0x98d220bc, 0xefd5102a, 0x71b18589,

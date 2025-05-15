@@ -3,6 +3,6 @@ package com.example.bluetooth.le;
 import android.bluetooth.BluetoothDevice;
 
 public class TouchObject {
-	public BluetoothDevice bluetoothDevice;   //当前操作蓝牙设备
-	public int clickDeviceItemId;     //当前操作蓝牙设备在列表中id
+	public BluetoothDevice bluetoothDevice;   //Current bluetooth device in operation
+	public int clickDeviceItemId;     //Current bluetooth device ID in the list
 }
