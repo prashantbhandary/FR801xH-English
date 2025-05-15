@@ -1,4 +1,6 @@
 package com.example.bluetooth.le;
+import android.app.Activity;
+import android.app.Dialog;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
@@ -6,7 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.Toast;
 
-import com.example.bluetooth.le.activity.ReadWriteActivity;
+import com.example.bluetooth.le.activity.OtaActiviy;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,17 +36,24 @@ public class DownLoad {
 	private int length;
 	private InputStream is;
 	OutputStream fos;
-	private ReadWriteActivity relayControl;
+	private Activity currentActivity;
+	private Dialog mDialog;
 	private String sdPath;
-	private  String PATH;
-	void downloadfile(String urlfile) throws MalformedURLException {
+	private String PATH;
+	
+	public DownLoad(Activity activity, Dialog dialog) {
+		this.currentActivity = activity;
+		this.mDialog = dialog;
+	}
+	
+	public void downloadFile(String urlfile, String savePath) throws MalformedURLException {
 		this.urlfile = urlfile;
-		relayControl = new ReadWriteActivity();
-		ConnectivityManager conManager = (ConnectivityManager) ReadWriteActivity.macticity
-				.getSystemService(ReadWriteActivity.macticity.CONNECTIVITY_SERVICE);
+		this.PATH = savePath;
+		
+		ConnectivityManager conManager = (ConnectivityManager) currentActivity
+				.getSystemService(currentActivity.CONNECTIVITY_SERVICE);
 		myMessage = new Message();
 		sdPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-		
 		
 		NetworkInfo network = conManager.getActiveNetworkInfo();
 		if (network != null) {
@@ -54,16 +63,12 @@ public class DownLoad {
 			MyThread thread = new MyThread();
 			thread.start();
 		} else {
-
 			myMessage = myhandler.obtainMessage(OPEN);
 			myhandler.sendMessage(myMessage);
-
 		}
-
 	}
 
 	class MyThread extends Thread {
-
 		@Override
 		public void run() {
 			super.run();
@@ -72,109 +77,118 @@ public class DownLoad {
 
 				HttpURLConnection conn = (HttpURLConnection) fileurl
 						.openConnection();
-				conn.setConnectTimeout(6 * 1000);
+				conn.setConnectTimeout(15 * 1000);
 				conn.setDoInput(true);
 
 				conn.connect();
 
 				is = conn.getInputStream();
 
-				length = (int) conn.getContentLength();
+				length = conn.getContentLength();
 			} catch (IOException e) {
 				myMessage = myhandler.obtainMessage(TIMEOUT);
 				myhandler.sendMessage(myMessage);
 				e.printStackTrace();
-			}
-		if (length > 0) {
-
-				byte[] imgData = new byte[length];
-
-				byte[] buffer = new byte[255];
-				System.out.println("size = " + length);
-				while(ReadWriteActivity.readStr1 == null);
-				if (ReadWriteActivity.readStr1.equals("\r\nOK\r\n")) {
-					int readLen = 0;
-
-					int destPos = 0;
-					
-					 File file = new File(PATH);// Get file path
-					 try {
-						fos = new FileOutputStream(file);
-					} catch (FileNotFoundException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					try {
-						while ((readLen = is.read(buffer)) > 0) {
-
-							System.arraycopy(buffer, 0, imgData, destPos,
-									readLen);
-							fos.write(buffer,0,readLen);
-							//RelayControl.outStream.write(buffer);
-							//System.out.println("buffer:" + new String(buffer));
-							destPos += readLen;
-						}
-						if(file.length() == length){
-							relayControl.doSendFileByBluetooth(PATH);
-						}else{
-							myMessage = new Message();
-							myMessage = myhandler.obtainMessage(FAILED);
-							myhandler.sendMessage(myMessage);
-							return;
-							
-						}					
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				} else {
-					myMessage = new Message();
-					myMessage = myhandler.obtainMessage(BUSY);
-					myhandler.sendMessage(myMessage);
-					return;
-				}
-		
-			}else{
-				myMessage = myhandler.obtainMessage(FAILED);
-				myhandler.sendMessage(myMessage);
 				return;
 			}
-
+			
+			if (length > 0) {
+				File file = new File(PATH);
+				File parent = file.getParentFile();
+				if (!parent.exists()) {
+					parent.mkdirs();
+				}
+				
+				try {
+					fos = new FileOutputStream(file);
+					
+					byte[] buffer = new byte[4096];
+					int readLen = 0;
+					int total = 0;
+					
+					try {
+						while ((readLen = is.read(buffer)) > 0) {
+							fos.write(buffer, 0, readLen);
+							total += readLen;
+							
+							// Update progress
+							int progress = (int) ((total * 100) / length);
+							Message progressMsg = new Message();
+							progressMsg.what = 100; // Custom message for progress
+							progressMsg.arg1 = progress;
+							myhandler.sendMessage(progressMsg);
+						}
+						
+						fos.flush();
+						fos.close();
+						is.close();
+						
+						if (file.length() == length) {
+							myMessage = myhandler.obtainMessage(SUCCESS);
+							myhandler.sendMessage(myMessage);
+						} else {
+							myMessage = myhandler.obtainMessage(FAILED);
+							myhandler.sendMessage(myMessage);
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+						myMessage = myhandler.obtainMessage(FAILED);
+						myhandler.sendMessage(myMessage);
+					}
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+					myMessage = myhandler.obtainMessage(FAILED);
+					myhandler.sendMessage(myMessage);
+				}
+			} else {
+				myMessage = myhandler.obtainMessage(FAILED);
+				myhandler.sendMessage(myMessage);
+			}
 		}
 	}
 
 	private Handler myhandler = new Handler() {
-
 		@Override
 		public void handleMessage(Message msg) {
-			// TODO Auto-generated method stub
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case SUCCESS:
-				ReadWriteActivity.mDialog.dismiss();
-				Toast.makeText(ReadWriteActivity.macticity, "Update successful",
+				mDialog.dismiss();
+				Toast.makeText(currentActivity, "Download successful",
 						Toast.LENGTH_SHORT).show();
+				
+				// Update UI with file path
+				if (currentActivity instanceof OtaActiviy) {
+					((OtaActiviy) currentActivity).updateFilePath(PATH);
+				}
 				break;
 			case FAILED:
-				ReadWriteActivity.mDialog.dismiss();
-				Toast.makeText(ReadWriteActivity.macticity, "Update failed",
+				mDialog.dismiss();
+				Toast.makeText(currentActivity, "Download failed",
 						Toast.LENGTH_SHORT).show();
 				break;
 			case TIMEOUT:
-				ReadWriteActivity.mDialog.dismiss();
-				Toast.makeText(ReadWriteActivity.macticity, "Connection timeout",
+				mDialog.dismiss();
+				Toast.makeText(currentActivity, "Connection timeout",
 						Toast.LENGTH_SHORT).show();
 				break;
 			case BUSY:
-				ReadWriteActivity.mDialog.dismiss();
-				Toast.makeText(ReadWriteActivity.macticity, "Device is busy",
+				mDialog.dismiss();
+				Toast.makeText(currentActivity, "Device is busy",
 						Toast.LENGTH_SHORT).show();
 				break;
 			case OPEN:
-				ReadWriteActivity.mDialog.dismiss();
-				Toast.makeText(ReadWriteActivity.macticity, "Please enable network",
+				mDialog.dismiss();
+				Toast.makeText(currentActivity, "Please enable network connection",
 						Toast.LENGTH_SHORT).show();
+				break;
+			case 100:
+				// Update progress
+				if (currentActivity instanceof OtaActiviy) {
+					((OtaActiviy) currentActivity).updateDownloadProgress(msg.arg1);
+				}
+				break;
 			}
 		}
-
 	};
 }

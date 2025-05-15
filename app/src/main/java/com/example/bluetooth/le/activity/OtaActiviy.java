@@ -18,6 +18,7 @@ import com.example.bluetooth.le.BluetoothLeClass.OnWriteDataListener;
 import com.example.bluetooth.le.LeDeviceListAdapter;
 import com.example.bluetooth.le.R;
 import com.example.bluetooth.le.WriterOperation;
+import com.example.bluetooth.le.DownLoad;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -47,6 +48,7 @@ import android.os.Message;
 import android.os.ParcelUuid;
 import android.os.Parcelable;
 import android.provider.Settings;
+import android.provider.Settings.Global;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -59,6 +61,7 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.os.Environment;
 
 import static android.bluetooth.BluetoothGatt.GATT_SUCCESS;
 import static android.content.ContentValues.TAG;
@@ -104,6 +107,7 @@ public class OtaActiviy extends Activity {
 	private Button searchBn;
 	private EditText _txtRead;
 	private EditText pathet = null;
+	private EditText urlEditText;
 
 	private boolean writeStatus = false;
 
@@ -281,6 +285,7 @@ public class OtaActiviy extends Activity {
 		searchBn = (Button) findViewById(R.id.searchbt);
 		_txtRead = (EditText) findViewById(R.id.etShow);
 		pathet = (EditText)findViewById(R.id.pathet);
+		urlEditText = (EditText)findViewById(R.id.urlEditText);
 		searchBn.setOnLongClickListener(new onLongClickImp());
 
 //		TextView tipTv = findViewById(R.id.tvtitle);
@@ -865,6 +870,78 @@ public class OtaActiviy extends Activity {
 				(byte)0x9e, (byte)0xf9, 0x01, 0x20, 0x00, (byte)0xf0, (byte)0xf8, (byte)0xfd, 0x29, 0x46, 0x30, 0x46, (byte)0xa0, 0x47, 0x01, 0x20,
 				(byte)0xff, (byte)0xf7, 0x20, (byte)0xfa, 0x62, (byte)0xb6, 0x70, (byte)0xbd};
 		woperation.send_data(OTA_CMD_WRITE_MEM, 0x200016fe, bf2, bf2.length, mgattCharacteristic, bleclass);
+	}
+
+	public void downloadBtnOnclick(View v) {
+		String url = urlEditText.getText().toString().trim();
+		if (url.isEmpty()) {
+			Toast.makeText(this, "Please enter a URL", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		
+		if (!url.endsWith(".bin")) {
+			Toast.makeText(this, "URL must point to a .bin file", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		
+		if (!verifyStoragePermissions()) {
+			Toast.makeText(this, "Storage permission is required for downloading", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		
+		// Create download directory if it doesn't exist
+		File dir = new File(Environment.getExternalStorageDirectory() + "/Freqchip/");
+		if (!dir.exists()) {
+			dir.mkdirs();
+		}
+		
+		// Create file path
+		String fileName = url.substring(url.lastIndexOf('/') + 1);
+		String filePath = dir.getAbsolutePath() + "/" + fileName;
+		
+		// Show downloading dialog
+		showDownloadDialog();
+		
+		// Start download
+		try {
+			DownLoad downloader = new DownLoad(this, mDialog);
+			downloader.downloadFile(url, filePath);
+		} catch (Exception e) {
+			e.printStackTrace();
+			mDialog.dismiss();
+			Toast.makeText(this, "Download failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+		}
+	}
+	
+	// Show download dialog
+	private void showDownloadDialog() {
+		layoutinflater = LayoutInflater.from(this);
+		view = layoutinflater.inflate(R.layout.loading_process_dialog_anim, null);
+		
+		precenttv = (TextView) view.findViewById(R.id.precenttv);
+		mDialog = new Dialog(this, R.style.dialog);
+		precenttv.setText("Downloading... 0%");
+		mDialog.setCancelable(false);
+		mDialog.setContentView(view);
+		mDialog.show();
+	}
+	
+	// Update download progress
+	public void updateDownloadProgress(int progress) {
+		if (precenttv != null) {
+			precenttv.setText("Downloading... " + progress + "%");
+		}
+	}
+	
+	// Update file path after download
+	public void updateFilePath(String path) {
+		if (pathet != null) {
+			pathet.setText(path);
+			
+			// Save to preferences
+			editor.putString("path", path);
+			editor.commit();
+		}
 	}
 
 }
