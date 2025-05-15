@@ -37,12 +37,12 @@ limitations under the License.
 
     <application android:label="@string/app_name"
                  android:icon="@drawable/freqchip"
-                 android:theme="@android:style/Theme.Holo.Light"
+                 android:theme="@style/AppTheme"
                  android:name="BluetoothApplication"
                  >
         <activity android:name="com.example.bluetooth.le.activity.OtaActiviy"
-                  android:label="@string/app_name"
-                  android:theme="@android:style/Theme.Black.NoTitleBar"
+                  android:label="Nizi Scanner BLE OTA"
+                  android:theme="@style/AppTheme"
                   >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

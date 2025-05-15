@@ -139,6 +139,12 @@ public class OtaActiviy extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		// Hide the action bar since we have our own title bar
+		if (getActionBar() != null) {
+			getActionBar().hide();
+		}
+		
 		setContentView(R.layout.file);
 		viewinit();
 
@@ -287,9 +293,6 @@ public class OtaActiviy extends Activity {
 		pathet = (EditText)findViewById(R.id.pathet);
 		urlEditText = (EditText)findViewById(R.id.urlEditText);
 		searchBn.setOnLongClickListener(new onLongClickImp());
-
-//		TextView tipTv = findViewById(R.id.tvtitle);
-//		tipTv.setText("Tips:" +"\r\n1.Location and storage permissions must be enabled.\r\n2.Search for devices, start upgrade after connection.\r\n3.Long press on connected device to disconnect");
 	}
 	@Override
 	protected void onDestroy() {

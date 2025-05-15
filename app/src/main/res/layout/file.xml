@@ -8,6 +8,39 @@
     android:background="#F5F5F5"
     app:layoutDescription="@xml/file_scene">
 
+    <LinearLayout
+        android:id="@+id/titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#2196F3"
+        android:elevation="4dp"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/appTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Nizi Scanner BLE OTA"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/appSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="4dp"
+            android:text="Bluetooth Low Energy Firmware Update"
+            android:textColor="#E0E0E0"
+            android:textSize="14sp" />
+    </LinearLayout>
+
     <Button
         android:id="@+id/searchbt"
         android:layout_width="wrap_content"
@@ -21,7 +54,7 @@
         android:text="Search"
         android:textAllCaps="false"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/titleBar" />
 
     <EditText
         android:id="@+id/etShow"
@@ -41,7 +74,7 @@
         android:padding="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/searchbt"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/titleBar" />
 
     <TextView
         android:id="@+id/urlLabel"
@@ -132,33 +165,15 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/btn_style"
         android:onClick="updateBnOnclick"
         android:text="Update Device"
         android:textAllCaps="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pathet" />
-
-    <TextView
-        android:id="@+id/tvtitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@android:color/white"
-        android:elevation="2dp"
-        android:longClickable="false"
-        android:padding="16dp"
-        android:text="Tips: \n\n1. For first installation, please enable location and storage permissions.\n\n2. Click Search, after connecting successfully, click Update Device.\n\n3. Long press on connected devices to disconnect and search again."
-        android:textColor="@android:color/black"
-        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/updatebt"
+        app:layout_constraintTop_toBottomOf="@+id/pathet"
         app:layout_constraintVertical_bias="0.0" />
 
 </android.support.constraint.ConstraintLayout>
