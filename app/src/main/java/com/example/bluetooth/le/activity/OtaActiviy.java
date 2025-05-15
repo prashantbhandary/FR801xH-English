@@ -365,9 +365,9 @@ public class OtaActiviy extends Activity {
 						Log.d(TAG,"GATT uuid:"+gattCharacteristic.getUuid());
 						String uuidString = gattCharacteristic.getUuid().toString();
 						if(uuidString.equals(UUID_SEND_DATA_H)){
-							//setTitle("找到端口");
+							//setTitle("Found port");
 						mgattCharacteristic = gattCharacteristic;
-						mHandler.sendEmptyMessage(5);//找到端口
+						mHandler.sendEmptyMessage(5);//Port found
 						}
 						gattCharacteristic = gatt.getService(UUID_SERVICE_H).getCharacteristic(UUID_RECV_H);
 						uuidString = gattCharacteristic.getUuid().toString();
@@ -379,11 +379,11 @@ public class OtaActiviy extends Activity {
 
 							descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
 							bleclass.writeDescriptor(descriptor);
-							mHandler.sendEmptyMessage(6);//使能成功
+							mHandler.sendEmptyMessage(6);//Notification enabled
 						}
 					}
 				} catch(Exception e) {
-					mHandler.sendEmptyMessage(8);//未找到UUID
+					mHandler.sendEmptyMessage(8);//UUID not found
 				}
 			}
 		}
@@ -431,7 +431,7 @@ public class OtaActiviy extends Activity {
 		public boolean onLongClick(View v) {
 			if(v.getId() == R.id.searchbt){
 				String bnString = searchBn.getText().toString();
-				if(bnString.equals("已连接")){
+				if(bnString.equals("Connected")){
 					bleclass.disconnect();
 				}
 			}
@@ -444,7 +444,7 @@ public class OtaActiviy extends Activity {
 		//Log.d("search","searchBnOnclick");
 		//Button searchBn = findViewById(R.id.searchbt);
 		String bnString = searchBn.getText().toString();
-		if(bnString.equals("搜索")){
+		if(bnString.equals("Search")){
 			if(mBluetoothAdapter.isDiscovering())
 				mBluetoothAdapter.cancelDiscovery();
 			mLeDeviceListAdapter.clear();
@@ -469,7 +469,7 @@ public class OtaActiviy extends Activity {
 					if(mBluetoothAdapter.isDiscovering())
 						mBluetoothAdapter.cancelDiscovery();
 					bleclass.connect(btDev.getAddress());
-					mHandler.sendEmptyMessage(4);//开始连接
+					mHandler.sendEmptyMessage(4);//Start connecting
 					//mBluetoothGatt = btDev.connectGatt(MainActivity.this,false,mBluetoothGattCallback);
 				}
 			}).show();
@@ -489,13 +489,13 @@ public class OtaActiviy extends Activity {
 	public void updateBnOnclick(View v){
 		//byte[] Buffer = new byte[4];
 		if(bleclass.isDisconnected) {
-			Toast.makeText(OtaActiviy.this, "未连接", Toast.LENGTH_SHORT).show();
+			Toast.makeText(OtaActiviy.this, "Not connected", Toast.LENGTH_SHORT).show();
 			return;
 		}
 		filePath = pathet.getText().toString().trim();
 		File file = new File(filePath);
 		if (file.length() < 100) {
-			Toast.makeText(OtaActiviy.this, "请选择有效的配置文件", Toast.LENGTH_SHORT).show();
+			Toast.makeText(OtaActiviy.this, "Please select a valid configuration file", Toast.LENGTH_SHORT).show();
 			return;
 		}
 		bleclass.mtuChange = false;
@@ -564,16 +564,16 @@ public class OtaActiviy extends Activity {
 			switch (msg.what) {
 				case 0:
 					mDialog.cancel();
-					Toast.makeText(OtaActiviy.this, "写入成功",
+					Toast.makeText(OtaActiviy.this, "Write successful",
 							Toast.LENGTH_SHORT).show();
-					_txtRead.setText("写入成功");
+					_txtRead.setText("Write successful");
 					break;
 				case 1:
-					precenttv.setText("写入.." + writePrecent + "%");
+					precenttv.setText("Writing.." + writePrecent + "%");
 					break;
 				case 2:
 					mDialog.cancel();
-					Toast.makeText(OtaActiviy.this, "连接断开",
+					Toast.makeText(OtaActiviy.this, "Connection lost",
 							Toast.LENGTH_LONG).show();
 					//finish();
 					break;
@@ -589,16 +589,16 @@ public class OtaActiviy extends Activity {
 				case 6:
 					mDialog.cancel();
 
-					searchBn.setText("已连接");
-					_txtRead.setText("名称:"+btDev.getName() + "\r\n地址:"+btDev.getAddress());
-					Toast.makeText(OtaActiviy.this, "连接成功", Toast.LENGTH_SHORT).show();
+					searchBn.setText("Connected");
+					_txtRead.setText("Name:"+btDev.getName() + "\r\nAddress:"+btDev.getAddress());
+					Toast.makeText(OtaActiviy.this, "Connected successfully", Toast.LENGTH_SHORT).show();
 					break;
 				case 7:
 				{
 					_txtRead.setText(null);
 					mDialog.cancel();
-					searchBn.setText("搜索");
-					Toast.makeText(OtaActiviy.this, "断开连接",
+					searchBn.setText("Search");
+					Toast.makeText(OtaActiviy.this, "Disconnected",
 							Toast.LENGTH_LONG).show();
 				}
 				break;
@@ -606,8 +606,8 @@ public class OtaActiviy extends Activity {
 				case 8:
 				{
 					mDialog.cancel();
-					//_txtRead.setText("未找到OTA所用UUID");
-					Toast.makeText(OtaActiviy.this, "未找到OTA所用UUID", Toast.LENGTH_LONG).show();
+					//_txtRead.setText("UUID for OTA not found");
+					Toast.makeText(OtaActiviy.this, "UUID for OTA not found", Toast.LENGTH_LONG).show();
 					bleclass.disconnect();
 				}
 					break;

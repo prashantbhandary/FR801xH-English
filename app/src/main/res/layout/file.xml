@@ -5,92 +5,88 @@
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/darker_gray"
+    android:background="#F5F5F5"
     app:layoutDescription="@xml/file_scene">
-
-    <Button
-        android:id="@+id/localbt"
-        android:layout_width="80dp"
-        android:layout_height="120dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_weight="1"
-        android:background="@drawable/btn_style"
-        android:onClick="localBnOnclick"
-        android:text="Path"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etShow" />
 
     <Button
         android:id="@+id/searchbt"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_weight="1"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/btn_style"
         android:onClick="searchBnOnclick"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:text="Search"
+        android:textAllCaps="false"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/updatebt"
-        android:layout_width="fill_parent"
+    <EditText
+        android:id="@+id/etShow"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/btn_style"
-        android:onClick="updateBnOnclick"
-        android:text="Write"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/editbox"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:gravity="top"
+        android:hint="Device Information"
+        android:inputType="textMultiLine"
+        android:maxLines="8"
+        android:minLines="4"
+        android:padding="12dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pathet" />
+        app:layout_constraintStart_toEndOf="@+id/searchbt"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/pathet"
         android:layout_width="0dp"
-        android:layout_height="120dp"
-        android:layout_marginTop="4dp"
-        android:layout_weight="15"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:background="@drawable/editbox"
         android:editable="false"
         android:focusable="false"
         android:gravity="top"
         android:hint="File Path"
+        android:minHeight="80dp"
+        android:padding="12dp"
         app:layout_constraintEnd_toStartOf="@+id/localbt"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etShow" />
 
-    <EditText
-        android:id="@+id/etShow"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/editbox"
-        android:cursorVisible="false"
-        android:focusable="false"
-        android:gravity="top"
-        android:hint="Receive Area"
-        android:inputType="textMultiLine"
-        android:maxLines="20"
-        app:layout_constraintStart_toEndOf="@+id/searchbt"
-        app:layout_constraintTop_toTopOf="parent"></EditText>
-
-    <TextView
-        android:id="@+id/tvtitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <Button
+        android:id="@+id/localbt"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginStart="8dp"
-        android:background="@android:color/darker_gray"
-        android:longClickable="false"
-        android:text="Tips: \n\n1. For first installation, please enable location and storage permissions.\n\n2. Click Search, after connecting successfully, click Write.\n\n3. Long press on connected devices to disconnect and search again."
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/background_dark"
-        android:textSize="20sp"
+        android:background="@drawable/btn_style"
+        android:onClick="localBnOnclick"
+        android:text="Browse"
+        android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.08"
+        app:layout_constraintTop_toTopOf="@+id/pathet" />
+
+    <Button
+        android:id="@+id/updatebt"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/btn_style"
+        android:onClick="updateBnOnclick"
+        android:text="Update Device"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/updatebt" />
+        app:layout_constraintTop_toBottomOf="@+id/pathet" />
+
 
 </android.support.constraint.ConstraintLayout>
